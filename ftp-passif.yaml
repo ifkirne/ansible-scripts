@@ -1,0 +1,33 @@
+---
+#
+# ouvrir les ports FTP passifs - CPanel
+# ansible-playbook ftp-passif.yaml --limit srv -vvv
+#
+- hosts: all
+  user: jenkins
+  sudo: yes
+  tasks:
+    - name: Add PassivePortRange to CPanel configs
+      lineinfile: "dest=/var/cpanel/conf/pureftpd/main
+                  line='PassivePortRange: 12000 12100'
+                  regexp='^PassivePortRange: 12000 12100'
+                  state=present"
+
+    - name: Let CPanel update the config permanently
+      shell: /usr/local/cpanel/scripts/setupftpserver pure-ftpd --force
+
+    - name: Check if port range is open in CSF
+      shell: grep "12000:12100" /etc/csf/csf.conf
+      register: port_result
+      ignore_errors: yes
+
+    - name: if not add the port range
+      shell: sed -i -e 's/\(^TCP_IN.*\)"$/\1,12000:12100"/' /etc/csf/csf.conf
+      when: port_result.rc != 0
+
+    - name: restart csf
+      shell: csf -r
+      when: port_result.rc != 0
+
+    - name: restart Pure-FTPd
+      service: name=pure-ftpd state=restarted

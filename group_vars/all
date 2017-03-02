@@ -1,0 +1,6 @@
+---
+# file: group_vars/all
+ansible_connection: ssh
+ansible_ssh_user: jenkins
+ansible_ssh_port: 2222
+license_key: z5g2554dpr4p99c27jy357de14m358e84878b9686

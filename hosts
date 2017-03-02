@@ -1,0 +1,12 @@
+[cpanel]
+cp1
+[backup]
+bk1
+
+[others]
+odoo
+powerdns
+jenkins
+
+{database]
+mysql1

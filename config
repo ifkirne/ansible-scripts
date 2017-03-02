@@ -1,0 +1,8 @@
+ServerAliveInterval 200
+StrictHostKeyChecking no
+
+host srv1
+    HostName 192.168.171.16
+    Port 2222
+    User user
+
